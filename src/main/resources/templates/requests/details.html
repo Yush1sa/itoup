@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Заявка #' + ${request.id})}"></head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container">
+
+    <div class="mb-3">
+        <a th:href="@{/my-requests}"
+           class="btn btn-outline-secondary">
+            ← Назад
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                Заявка #<span th:text="${request.id}"></span>
+            </h4>
+            <span class="badge bg-primary"
+                  th:text="${request.status}">
+            </span>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-3">
+                <strong>ПО:</strong>
+                <span th:text="${request.softwareName}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Аудитории:</strong>
+                <span th:text="${request.classrooms}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Дедлайн:</strong>
+                <span th:text="${#temporals.format(request.deadline, 'dd.MM.yyyy')}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Дата создания:</strong>
+                <span th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">></span>
+            </div>
+            <div class="mb-3">
+                <strong>Описание:</strong>
+                <p th:text="${request.description}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

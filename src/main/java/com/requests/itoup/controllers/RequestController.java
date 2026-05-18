@@ -3,6 +3,7 @@ package com.requests.itoup.controllers;
 
 import com.requests.itoup.models.Request;
 import com.requests.itoup.services.RequestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class RequestController {
 
     private final RequestService requestService;
 
-    public RequestController(RequestService requestService) {
-        this.requestService = requestService;
-    }
 
     @GetMapping("/requests/create")
     public String createForm(Model model) {
@@ -41,11 +40,9 @@ public class RequestController {
     }
 
     @GetMapping("/requests/{id}")
-    public String requestById(@PathVariable Long id, Model model){
-        Request request = requestService.findById(id);
-
-        model.addAttribute("request", request);
-
+    public String userDetails(@PathVariable Long id, Model model) {
+        model.addAttribute("request", requestService.findById(id));
+        model.addAttribute("backUrl", "/my-requests");
         return "requests/details";
     }
 

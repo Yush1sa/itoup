@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +32,18 @@ public class RequestService {
 
     public void deleteById(Long id) {
         requestRepository.deleteById(id);
+    }
+
+    public void updateStatus(Long id, RequestStatus status){
+        Request request = findById(id);
+        request.setStatus(status);
+        requestRepository.save(request);
+    }
+
+    public void rejectRequest(Long id, String reason) {
+        Request request = findById(id);
+        request.setStatus(RequestStatus.REJECTED);
+        request.setRejectionReason(reason);
+        requestRepository.save(request);
     }
 }

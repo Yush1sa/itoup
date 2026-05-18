@@ -11,8 +11,7 @@
 <div class="container">
 
     <div class="mb-3">
-        <a th:href="@{/my-requests}"
-           class="btn btn-outline-secondary">
+        <a th:href="@{${backUrl}}" class="btn btn-outline-secondary">
             ← Назад
         </a>
     </div>
@@ -22,9 +21,27 @@
             <h4 class="mb-0">
                 Заявка #<span th:text="${request.id}"></span>
             </h4>
-            <span class="badge bg-primary"
-                  th:text="${request.status}">
-            </span>
+            <span th:if="${request.status.name() == 'NEW'}"
+                  class="badge bg-secondary">
+                        Новая
+                    </span>
+            <span th:if="${request.status.name() == 'ACCEPTED'}"
+                  class="badge bg-primary">
+                        Принята
+                    </span>
+            <span th:if="${request.status.name() == 'IN_PROGRESS'}"
+                  class="badge bg-warning text-dark">
+                        В работе
+                    </span>
+            <span th:if="${request.status.name() == 'DONE'}"
+                  class="badge bg-success">
+                        Выполнена
+                    </span>
+
+            <span th:if="${request.status.name() == 'REJECTED'}"
+                  class="badge bg-danger">
+                        Отклонена
+                    </span>
         </div>
 
         <div class="card-body">
@@ -47,6 +64,19 @@
             <div class="mb-3">
                 <strong>Описание:</strong>
                 <p th:text="${request.description}"></p>
+            </div>
+            <div th:if="${request.status.name() == 'REJECTED'}"
+                 class="alert alert-danger mt-4">
+                <div class="d-flex align-items-center mb-2">
+                    <strong>Отклонено</strong>
+                </div>
+                <div class="border rounded p-2 bg-light">
+                    <div class="text-muted small mb-1">
+                        Причина отказа
+                    </div>
+                    <div th:text="${request.rejectionReason}">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

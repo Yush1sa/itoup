@@ -47,10 +47,12 @@
 
                 <td>
                     <span th:if="${request.status.name() == 'NEW'}"
-                          class="badge bg-primary">
-
+                          class="badge bg-secondary">
                         Новая
-
+                    </span>
+                    <span th:if="${request.status.name() == 'ACCEPTED'}"
+                          class="badge bg-primary">
+                        Принята
                     </span>
                     <span th:if="${request.status.name() == 'IN_PROGRESS'}"
                           class="badge bg-warning text-dark">
@@ -60,7 +62,6 @@
                           class="badge bg-success">
                         Выполнена
                     </span>
-
                     <span th:if="${request.status.name() == 'REJECTED'}"
                           class="badge bg-danger">
                         Отклонена

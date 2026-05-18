@@ -20,34 +20,20 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Название ПО
-    @Column(nullable = false)
     private String softwareName;
 
-    // Аудитории
-    // Например: "A-312, A-313"
-    @Column(nullable = false)
     private String classrooms;
 
-    // Дедлайн
-    @Column(nullable = false)
     private LocalDate deadline;
 
-    // Дополнительное описание
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    // Статус заявки
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private RequestStatus status;
 
-    // Дата создания
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Назначенный сотрудник
-//    @ManyToOne
-//    @JoinColumn(name = "assigned_employee_id")
-//    private User assignedEmployee;
+    @Column(columnDefinition = "TEXT")
+    private String rejectionReason;
 }

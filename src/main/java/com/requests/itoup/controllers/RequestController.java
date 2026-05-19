@@ -32,7 +32,7 @@ public class RequestController {
         return "redirect:/my-requests";
     }
 
-    @GetMapping("/my-requests")
+    @GetMapping("/requests/my")
     public String myRequests(Model model){
         model.addAttribute("requests", requestService.findAll());
 

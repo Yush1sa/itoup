@@ -36,4 +36,12 @@ public class Request {
 
     @Column(columnDefinition = "TEXT")
     private String rejectionReason;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private User employee;
 }

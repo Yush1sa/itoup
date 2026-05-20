@@ -65,6 +65,14 @@
                 <strong>Описание:</strong>
                 <p th:text="${request.description}"></p>
             </div>
+            <div class="mb-3">
+                <strong>Создатель:</strong>
+                <span th:text="${request.creator != null ? request.creator.fullName : 'Не указан'}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Email:</strong>
+                <span th:text="${request.creator != null ? request.creator.email : 'Не указан'}"></span>
+            </div>
             <div th:if="${request.status.name() == 'REJECTED'}"
                  class="alert alert-danger mt-4">
                 <div class="d-flex align-items-center mb-2">

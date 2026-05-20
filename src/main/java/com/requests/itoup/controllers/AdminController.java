@@ -83,4 +83,12 @@ public class AdminController {
         requestService.assignEmployee(id, employee, currentUser);
         return "redirect:/admin/requests";
     }
+
+    @PostMapping("/admin/requests/{id}/delete")
+    public String deleteRequest(@PathVariable Long id,
+                                @AuthenticationPrincipal User currentUser) {
+        requestService.deleteById(id, currentUser);
+
+        return "redirect:/admin/requests";
+    }
 }

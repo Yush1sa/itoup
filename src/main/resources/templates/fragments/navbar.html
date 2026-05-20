@@ -1,49 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
 <header th:fragment="navbar">
-
     <div class="container">
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
 
             <a th:href="@{/}"
                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto
                       link-body-emphasis text-decoration-none">
-
-                <span class="fs-4">
-                    ИТОУП
-                </span>
+                <span class="fs-4">ИТОУП</span>
             </a>
 
             <ul class="nav nav-pills">
 
-                <li class="nav-item">
-                    <a th:href="@{/requests/my}"
-                       class="nav-link">
-                        Мои заявки
-                    </a>
+                <li class="nav-item" sec:authorize="hasRole('TEACHER')">
+                    <a th:href="@{/requests/my}" class="nav-link">Мои заявки</a>
                 </li>
 
-                <li class="nav-item">
-                    <a th:href="@{/requests/create}"
-                       class="nav-link">
-                        Создать заявку
-                    </a>
+                <li class="nav-item" sec:authorize="hasRole('TEACHER')">
+                    <a th:href="@{/requests/create}" class="nav-link">Создать заявку</a>
                 </li>
 
-                <li class="nav-item">
-                    <a th:href="@{/admin/requests}"
-                       class="nav-link">
-                        Администрирование
-                    </a>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
+                    <a th:href="@{/admin/requests}" class="nav-link">Заявки</a>
                 </li>
 
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit"
-                                class="btn btn-outline-danger ms-2">
+                        <button type="submit" class="btn btn-outline-danger ms-2">
                             Выйти
                         </button>
                     </form>
@@ -52,7 +39,6 @@
             </ul>
         </header>
     </div>
-
 </header>
 
 </body>

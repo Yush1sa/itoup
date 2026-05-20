@@ -31,7 +31,7 @@ public class RequestController {
                                 @AuthenticationPrincipal User currentUser){
         requestService.save(request, currentUser);
 
-        return "redirect:/my-requests";
+        return "redirect:/requests/my";
     }
 
     @GetMapping("/requests/my")
@@ -46,14 +46,15 @@ public class RequestController {
     public String userDetails(@PathVariable Long id, Model model,
                               @AuthenticationPrincipal User currentUser) {
         model.addAttribute("request", requestService.findById(id, currentUser));
-        model.addAttribute("backUrl", "/my-requests");
+        model.addAttribute("backUrl", "/requests/my");
         return "requests/details";
     }
 
     @PostMapping("/requests/{id}/delete")
-    public String deleteRequest(@PathVariable Long id, Model model) {
-        requestService.deleteById(id);
+    public String deleteRequest(@PathVariable Long id,
+                                @AuthenticationPrincipal User currentUser) {
+        requestService.deleteById(id, currentUser);
 
-        return "redirect:/my-requests";
+        return "redirect:/requests/my";
     }
 }

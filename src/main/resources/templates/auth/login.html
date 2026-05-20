@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Вход')}"></head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+<div class="flex-grow-1 d-flex align-items-center justify-content-center">
+    <div class="card shadow-sm" style="width: 400px">
+        <div class="card-header text-center bg-white py-3">
+            <h4 class="mb-0 text-primary fw-bold">ИТОУП — Вход</h4>
+        </div>
+        <div class="card-body p-4">
+
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                Неверный email или пароль
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show" role="alert">
+                Вы вышли из системы
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Email</label>
+                    <input type="email" id="username" name="username" class="form-control"
+                           placeholder="example@mail.com" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    Войти
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

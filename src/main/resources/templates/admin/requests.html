@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/head :: head('Мои заявки')}"></head>
 <body>
 
@@ -7,7 +8,8 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Мои заявки</h2>
+        <h2 th:text="${#authorization.expression('hasRole(''ADMIN'')')} ? 'Все заявки (Админ)' : 'Мои заявки'">Мои
+            заявки</h2>
         <a th:href="@{/requests/create}" class="btn btn-primary">Создать заявку</a>
     </div>
 
@@ -25,7 +27,9 @@
                 <th>Дедлайн</th>
                 <th>Статус</th>
                 <th>Создана</th>
-                <th class="text-center" style="width: 220px">Действия</th>
+                <th>Создатель</th>
+                <th>Сотрудник</th>
+                <th class="text-center" style="width: auto">Действия</th>
             </tr>
             </thead>
 
@@ -39,13 +43,23 @@
                 <td>
                     <span th:if="${request.status.name()=='NEW'}" class="badge bg-secondary">Новая</span>
                     <span th:if="${request.status.name()=='ACCEPTED'}" class="badge bg-primary">Принята</span>
-                    <span th:if="${request.status.name()=='IN_PROGRESS'}" class="badge bg-warning text-dark">В работе</span>
+                    <span th:if="${request.status.name()=='IN_PROGRESS'}"
+                          class="badge bg-warning text-dark">В работе</span>
                     <span th:if="${request.status.name()=='DONE'}" class="badge bg-success">Выполнена</span>
                     <span th:if="${request.status.name()=='REJECTED'}" class="badge bg-danger">Отклонена</span>
                 </td>
 
                 <td th:text="${#temporals.format(request.createdAt,'dd.MM.yyyy HH:mm')}"></td>
-
+                <td>
+                    <span th:if="${request.employee != null}"
+                          th:text="${request.employee.fullName}"
+                          class="text-muted small">
+                    </span>
+                    <span th:if="${request.employee == null}" class="text-muted small">
+                        Не назначен
+                    </span>
+                </td>
+                <td th:text="${request.creator != null ? request.creator.fullName : '—'}"></td>
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-1">
 
@@ -54,7 +68,7 @@
                         </a>
 
                         <form th:if="${request.status.name()=='DONE' || request.status.name()=='REJECTED'}"
-                              th:action="@{'/requests/' + ${request.id} + '/delete'}"
+                              th:action="@{'/admin/requests/' + ${request.id} + '/delete'}"
                               method="post"
                               onsubmit="return confirm('Удалить заявку?')">
                             <button class="btn btn-sm btn-outline-danger">
@@ -86,7 +100,27 @@
                               method="post">
                             <button class="btn btn-sm btn-success">Завершить</button>
                         </form>
-
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <form th:if="${request.status.name() == 'NEW' or request.status.name() == 'ACCEPTED'}"
+                                  th:action="@{'/admin/requests/' + ${request.id} + '/assign'}"
+                                  method="post"
+                                  class="d-flex gap-1">
+                                <select name="employeeId" class="form-select form-select-sm">
+                                    <option value="" disabled
+                                            th:selected="${request.employee == null}">
+                                        Сотрудник
+                                    </option>
+                                    <option th:each="emp : ${employees}"
+                                            th:value="${emp.id}"
+                                            th:text="${emp.fullName}"
+                                            th:selected="${request.employee != null and request.employee.id == emp.id}">
+                                    </option>
+                                </select>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -95,7 +129,6 @@
     </div>
 </div>
 
-<!-- Модальные окна вынесены за пределы таблицы -->
 <th:block th:each="request : ${requests}">
     <div class="modal fade"
          th:id="'rejectModal-' + ${request.id}"

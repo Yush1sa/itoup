@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="~{fragments/head :: head('Главная')}"></head>
 
@@ -14,7 +15,7 @@
         <div class="container-fluid py-5">
 
             <h1 class="display-5 fw-bold">
-                Система обработки заявок
+                Система обработки заявок ИТОУП
             </h1>
 
             <p class="col-md-8 fs-5">
@@ -22,9 +23,16 @@
                 на установку программного обеспечения.
             </p>
 
-            <a th:href="@{/requests/create}"
-               class="btn btn-primary btn-lg">
+            <a sec:authorize="hasRole('TEACHER')"
+               th:href="@{/requests/create}"
+               class="btn btn-primary btn-lg me-2">
                 Создать заявку
+            </a>
+
+            <a sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')"
+               th:href="@{/admin/requests}"
+               class="btn btn-primary btn-lg">
+                Перейти к заявкам
             </a>
 
         </div>
@@ -32,39 +40,36 @@
 
     <div class="row">
 
-        <div class="col-md-6">
+        <div class="col-md-6" sec:authorize="hasRole('TEACHER')">
             <div class="card mb-4">
-
-                <div class="card-header">
-                    Последние заявки
-                </div>
-
+                <div class="card-header">Мои заявки</div>
                 <div class="card-body">
-
-                    <p>
-                        Здесь позже будет список последних заявок.
-                    </p>
-
+                    <p>Создавайте заявки на установку ПО и отслеживайте их статус.</p>
+                    <a th:href="@{/requests/my}" class="btn btn-outline-primary btn-sm">
+                        Посмотреть
+                    </a>
                 </div>
+            </div>
+        </div>
 
+        <div class="col-md-6" sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
+            <div class="card mb-4">
+                <div class="card-header">Управление заявками</div>
+                <div class="card-body">
+                    <p>Просматривайте и обрабатывайте входящие заявки.</p>
+                    <a th:href="@{/admin/requests}" class="btn btn-outline-primary btn-sm">
+                        Перейти
+                    </a>
+                </div>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="card mb-4">
-
-                <div class="card-header">
-                    Информация
-                </div>
-
+                <div class="card-header">Информация</div>
                 <div class="card-body">
-
-                    <p>
-                        Система IT-отдела университета.
-                    </p>
-
+                    <p>Система IT-отдела ИРНИТУ. По вопросам обращайтесь в отдел ИТОУП.</p>
                 </div>
-
             </div>
         </div>
 

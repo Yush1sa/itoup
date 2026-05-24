@@ -1,13 +1,16 @@
 package com.requests.itoup.controllers;
 
 
+import com.requests.itoup.dto.RequestCreateDto;
 import com.requests.itoup.models.Request;
 import com.requests.itoup.models.User;
 import com.requests.itoup.services.RequestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,17 +25,23 @@ public class RequestController {
     @GetMapping("/requests/create")
     public String createForm(Model model) {
 
-        model.addAttribute("request", new Request());
+        model.addAttribute("request", new RequestCreateDto());
 
         return "requests/create";
     }
     @PostMapping("/requests/create")
-    public String createRequest(@ModelAttribute Request request,
+    public String createRequest(@Valid @ModelAttribute("request") RequestCreateDto dto,
+                                BindingResult bindingResult,
                                 @AuthenticationPrincipal User currentUser){
-        requestService.save(request, currentUser);
+        if (bindingResult.hasErrors()) {
+            return "requests/create";
+        }
+
+        requestService.create(dto, currentUser);
 
         return "redirect:/requests/my";
     }
+
 
     @GetMapping("/requests/my")
     public String myRequests(Model model,

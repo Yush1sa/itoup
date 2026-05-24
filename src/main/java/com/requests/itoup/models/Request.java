@@ -20,28 +20,33 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String softwareName;
 
+    @Column(nullable = false)
     private String classrooms;
 
+    @Column(nullable = false)
     private LocalDate deadline;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(columnDefinition = "TEXT")
     private String rejectionReason;
 
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private User employee;
 }

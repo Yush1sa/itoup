@@ -54,6 +54,7 @@ public class Request {
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private User employee;

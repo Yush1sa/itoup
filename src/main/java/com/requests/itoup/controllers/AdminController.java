@@ -1,5 +1,6 @@
 package com.requests.itoup.controllers;
 
+import com.requests.itoup.exception.InvalidRequestStateException;
 import com.requests.itoup.models.User;
 import com.requests.itoup.models.enums.RequestStatus;
 
@@ -76,11 +77,21 @@ public class AdminController {
     }
 
     @PostMapping("/admin/requests/{id}/assign")
-    public String assignEmployee(@PathVariable Long id,
-                                 @RequestParam Long employeeId,
-                                 @AuthenticationPrincipal User currentUser) {
+    public String assignEmployee(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long employeeId,
+            @AuthenticationPrincipal User currentUser
+    ) {
+
+        if (employeeId == null) {
+            throw new InvalidRequestStateException(
+                    "Выберите сотрудника"
+            );
+        }
+
         User employee = userService.findById(employeeId);
         requestService.assignEmployee(id, employee, currentUser);
+
         return "redirect:/admin/requests";
     }
 

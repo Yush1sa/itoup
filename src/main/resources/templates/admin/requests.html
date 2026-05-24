@@ -8,9 +8,16 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 th:text="${#authorization.expression('hasRole(''ADMIN'')')} ? 'Все заявки (Админ)' : 'Мои заявки'">Мои
-            заявки</h2>
-        <a th:href="@{/requests/create}" class="btn btn-primary">Создать заявку</a>
+        <h2 th:text="${#authorization.expression('hasRole(''ADMIN'')')} ? 'Все заявки (Админ)' : 'Мои заявки'">
+            Мои заявки
+        </h2>
+        <a th:href="@{/requests/create}" class="btn btn-primary">
+            Создать заявку
+        </a>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
     <div th:if="${requests.isEmpty()}" class="alert alert-info">

@@ -2,6 +2,7 @@ package com.requests.itoup.services;
 
 import com.requests.itoup.dto.RequestCreateDto;
 import com.requests.itoup.exception.BusinessAccessDeniedException;
+import com.requests.itoup.exception.InvalidRequestStateException;
 import com.requests.itoup.exception.RequestNotFoundException;
 import com.requests.itoup.models.Request;
 import com.requests.itoup.models.User;
@@ -31,9 +32,8 @@ public class RequestService {
         request.setClassrooms(dto.getClassrooms());
         request.setDeadline(dto.getDeadline());
         request.setDescription(dto.getDescription());
-
         request.setCreatedAt(LocalDateTime.now());
-        request.setStatus(RequestStatus.NEW);
+        request.markAsNew();
         request.setCreator(currentUser);
 
         requestRepository.save(request);
@@ -45,10 +45,8 @@ public class RequestService {
         return switch (currentUser.getRole()) {
 
             case ADMIN -> requestRepository.findAll();
-
             case EMPLOYEE -> requestRepository
                     .findByEmployee(currentUser);
-
             case TEACHER -> requestRepository
                     .findByCreator(currentUser);
         };
@@ -71,7 +69,6 @@ public class RequestService {
 
         if (currentUser.getRole() == Role.TEACHER
                 && request.getStatus() != RequestStatus.NEW) {
-
             throw new BusinessAccessDeniedException(
                     "Нельзя удалить заявку в текущем статусе"
             );
@@ -86,17 +83,22 @@ public class RequestService {
 
         accessService.requireStatusChangeAccess(currentUser, status);
 
-        request.setStatus(status);
+        switch (status) {
+
+            case ACCEPTED -> request.accept();
+            case IN_PROGRESS -> request.startProgress();
+            case DONE -> request.complete();
+            default -> throw new InvalidRequestStateException(
+                    "Недопустимый переход"
+            );
+        }
     }
 
     public void rejectRequest(Long id, String reason, User currentUser) {
 
         accessService.requireAdmin(currentUser);
-
         Request request = findById(id, currentUser);
-
-        request.setStatus(RequestStatus.REJECTED);
-        request.setRejectionReason(reason);
+        request.reject(reason);
     }
 
     public void assignEmployee(Long id, User employee, User currentUser) {
@@ -105,8 +107,6 @@ public class RequestService {
         accessService.requireEmployee(employee);
 
         Request request = findById(id, currentUser);
-
-        request.setEmployee(employee);
-        request.setStatus(RequestStatus.IN_PROGRESS);
+        request.assignEmployee(employee);
     }
 }
